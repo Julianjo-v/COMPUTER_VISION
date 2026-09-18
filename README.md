@@ -1,284 +1,107 @@
-# Raspberry Pi Zero 2 W Computer Vision Shape Classifier
+# Raspberry Pi Shape Classifier
 
-A real-time computer vision project designed primarily for the **Raspberry Pi Zero 2 W**. The system uses a camera to detect objects, extract geometric features from their contours, and classify their shapes using a trained Decision Tree machine learning model.
+A lightweight, real-time computer-vision project that detects coloured objects from a camera feed and classifies their geometric shape. It is designed for a Raspberry Pi Zero 2 W, but the full workflow can also run on a computer with Python and a webcam.
 
-The project was designed to demonstrate how computer vision and machine learning can be implemented on a small, low-power embedded computer.
+Rather than using a large neural network, the project segments objects by colour, measures their contours, and sends five numeric shape descriptors to a Decision Tree classifier. This keeps the runtime small enough for embedded hardware.
 
-Although the main target is the Raspberry Pi Zero 2 W, the program can also be run on a regular computer with Python and a compatible camera.
-## Images
-<img width="788" height="598" alt="image" src="https://github.com/user-attachments/assets/d9cbf8da-b95d-4a83-86a6-626c07ba3229" />
-<img width="3024" height="4032" alt="BASE COMP VISION BOX" src="https://github.com/user-attachments/assets/d70cd222-0ca2-458a-a445-2c3029c5df03" />
+## What the project does
 
-
-## Project Overview
-
-The goal of this project was to create a **small and lightweight shape recognition system** that could run on a Raspberry Pi Zero 2 W.
-
-The Pi Zero 2 W captures images from a camera and processes them using OpenCV. Instead of using a large neural network, the system extracts a small set of geometric features from each detected object.
-
-These features are then provided to a trained Decision Tree classifier, which predicts the shape of the object.
-
-The predicted shape is displayed on the live camera feed together with a bounding box around the detected object.
-
-## Hardware
-
-### Main Hardware
-
-* **Raspberry Pi Zero 2 W**
-* Camera / USB webcam
-* MicroSD card
-* Power supply
-
-The Raspberry Pi Zero 2 W is the primary platform for this project.
-
-Its small size and low power requirements make it suitable for creating compact embedded computer vision applications.
-
-## System Pipeline
-
-The computer vision system follows this process:
+1. Captures a 640 × 480 camera frame.
+2. Converts the frame from BGR to HSV and thresholds the saturation channel to isolate coloured objects.
+3. Uses morphological opening/closing and connected-component analysis to remove noise and find objects.
+4. Calculates contour descriptors: area, perimeter, circularity, compactness, and convexity.
+5. Uses the saved Decision Tree model to predict a label and draws that label and a bounding box on the live feed.
 
 ```text
-                 Camera
-                    ↓
-          Raspberry Pi Zero 2 W
-                    ↓
-             Capture Image
-                    ↓
-              BGR → HSV
-                    ↓
-         Saturation Threshold
-                    ↓
-        Morphological Filtering
-                    ↓
-         Connected Components
-                    ↓
-           Contour Detection
-                    ↓
-        Extract Shape Features
-                    ↓
-          Decision Tree Model
-                    ↓
-          Predicted Shape
-                    ↓
-       Bounding Box + Label
+Camera → HSV segmentation → clean binary mask → contours
+       → shape descriptors → Decision Tree → label + bounding box
 ```
 
-## How It Works
-
-### 1. Camera Capture
-
-The Raspberry Pi Zero 2 W captures frames from a connected camera.
-
-The program uses a resolution of:
+## Repository layout
 
 ```text
-640 × 480 pixels
-```
-
-The camera index can be changed depending on the camera being used:
-
-```python
-cap = cv2.VideoCapture(1)
-```
-
-If the camera is detected as device `0`, it can be changed to:
-
-```python
-cap = cv2.VideoCapture(0)
-```
-
-### 2. HSV Image Segmentation
-
-Each camera frame is converted from BGR to HSV color space.
-
-The saturation channel is extracted:
-
-```python
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-s = hsv[:, :, 1]
-```
-
-A threshold is then applied to separate the objects from the background:
-
-```python
-_, binary = cv2.threshold(s, 40, 255, cv2.THRESH_BINARY)
-```
-
-Morphological operations are used to clean up the resulting binary image.
-
-### 3. Object Detection
-
-Connected components are used to identify individual objects.
-
-Small components are removed using an area threshold. This helps prevent small areas of noise from being classified as objects.
-
-Contours are then extracted from the remaining components.
-
-### 4. Shape Feature Extraction
-
-For each detected object, the program calculates five geometric features:
-
-| Feature     | Purpose                                               |
-| ----------- | ----------------------------------------------------- |
-| Area        | Measures the size of the object                       |
-| Perimeter   | Measures the length of the object's contour           |
-| Circularity | Describes how circular the object is                  |
-| Compactness | Describes the relationship between perimeter and area |
-| Convexity   | Compares the contour to its convex hull               |
-
-These measurements provide the machine learning model with information about the object's shape.
-
-### 5. Decision Tree Classification
-
-The five extracted features are passed to a trained Decision Tree model:
-
-```text
-Area
-Perimeter
-Circularity
-Compactness
-Convexity
-       ↓
-Decision Tree
-       ↓
-Shape Prediction
-```
-
-The trained model is loaded using Joblib.
-
-The model bundle contains:
-
-* Decision Tree classifier
-* Label encoder
-* Feature names
-
-The label encoder converts the model's numerical prediction back into the name of the detected shape.
-
-### 6. Displaying the Result
-
-Once the shape has been classified, the program displays the result on the camera image.
-
-A bounding box is drawn around the object and the predicted shape is displayed above it.
-
-Example:
-
-<img width="1514" height="987" alt="COMPUTER VISION PHOTO" src="https://github.com/user-attachments/assets/5033216d-f630-4fe3-b822-fee5133d7df1" />
-
-## Why the Raspberry Pi Zero 2 W?
-
-The Raspberry Pi Zero 2 W was chosen as the main platform because it provides a small and low-power computer capable of running Python and OpenCV.
-
-The project also demonstrates an important embedded systems concept: **designing a computer vision application that can operate with limited hardware resources**.
-
-Rather than processing images using a computationally expensive deep-learning model, this project uses:
-
-* Image segmentation
-* Contour detection
-* Geometric shape descriptors
-* A lightweight Decision Tree classifier
-
-This approach reduces the amount of computation required on the Raspberry Pi Zero 2 W.
-
-## Running on a Regular Computer
-
-The project is primarily intended for the Raspberry Pi Zero 2 W, but the same Python program can also be tested on a normal computer.
-
-A computer can be useful for:
-
-* Developing the program
-* Training the Decision Tree
-* Testing the computer vision pipeline
-* Collecting training data
-* Debugging the system
-
-Once the system is working, the program can be transferred to the Raspberry Pi Zero 2 W.
-
-## Technologies Used
-
-### Hardware
-
-* Raspberry Pi Zero 2 W
-* Camera / USB webcam
-
-### Software
-
-* Python
-* OpenCV
-* NumPy
-* Pandas
-* Scikit-learn
-* Joblib
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/YOUR_USERNAME/computer-vision-shape-classifier.git
-```
-
-Enter the project folder:
-
-```bash
-cd computer-vision-shape-classifier
-```
-
-Install the required Python packages:
-
-```bash
-pip install -r requirements.txt
+Training images/
+  Real_images/                             Source images used for the current training set
+  Digital_images/                          Additional generated reference images
+src/
+  Shape classification/
+    shape_classification_resize.py         Extracts descriptors at the live-camera resolution
+    shape_classification_regular.py        Older, non-resized descriptor extractor
+  Training/
+    shape_descriptors_project_640x480.csv  Generated descriptor dataset
+    decision_tree_640x480.py               Trains and saves the Decision Tree bundle
+  shape_descriptor/
+    shape_descriptor.py                    Live webcam classifier
+    decision_tree_model_final.joblib       Saved model used by the live classifier
 ```
 
 ## Requirements
 
-```text
-opencv-python
-numpy
-pandas
-scikit-learn
-joblib
-```
+- Python 3
+- A USB webcam or Raspberry Pi-compatible camera for live classification
+- Raspberry Pi Zero 2 W is the target hardware; a desktop computer works for development and training
 
-## Running the Program
-
-Run the classifier:
+Install the Python packages from the repository root:
 
 ```bash
-python shape_classifier.py
+python -m pip install -r requirements.txt
 ```
 
-The camera window will open and the system will begin detecting and classifying objects.
+## Run the complete workflow
 
-Press:
+Run these commands from the repository root. Quotation marks are needed because one directory name contains a space.
 
-```text
-q
+### 1. Build the training dataset
+
+This reads images from `Training images/Real_images`, resizes each to 640 × 480 to match live inference, and writes descriptors to `src/Training/shape_descriptors_project_640x480.csv`.
+
+```bash
+python "src/Shape classification/shape_classification_resize.py"
 ```
 
-to exit the program.
+The image filename becomes the class label. The included real-image dataset contains `BEAD`, `CIRCLE`, `DIAMOND`, `KNOB`, and `SQUARE` examples.
 
-## Future Improvements
+### 2. Train the model
 
-Possible improvements to the project include:
+This reads the generated CSV and overwrites `src/shape_descriptor/decision_tree_model_final.joblib`, which is the model consumed by the webcam program.
 
-* Optimizing OpenCV processing specifically for the Pi Zero 2 W
-* Improving detection under different lighting conditions
-* Adding additional shape classes
-* Supporting multiple objects simultaneously
-* Improving the training dataset
-* Adding prediction confidence
-* Using the Raspberry Pi Camera Module
-* Connecting the classifier to a robotic object-sorting system
-* Measuring processing speed and FPS on the Pi Zero 2 W
-* Reducing memory and CPU usage
+```bash
+python src/Training/decision_tree_640x480.py
+```
 
-## Project Goal
+### 3. Start live classification
 
-The main goal of this project was to build a **real-time computer vision shape classifier on a Raspberry Pi Zero 2 W**.
+```bash
+python src/shape_descriptor/shape_descriptor.py
+```
 
-The project demonstrates how a small embedded computer can combine a camera, image processing, and machine learning to recognize physical objects in real time.
+Press `q` while the camera window is active to exit.
 
-The system uses traditional computer vision to extract meaningful shape information and a lightweight Decision Tree to classify the detected objects.
+If the camera does not open, change `cv2.VideoCapture(0)` in `src/shape_descriptor/shape_descriptor.py` to the camera index assigned by the operating system, such as `1`.
+
+## Feature descriptors
+
+| Feature | Meaning |
+| --- | --- |
+| Area | Pixels inside the contour |
+| Perimeter | Length of the contour boundary |
+| Circularity | How closely the contour resembles a circle |
+| Compactness | Relationship between perimeter and area |
+| Convexity | Contour perimeter compared with its convex hull |
+
+The training and live scripts use the same feature order and the same 640 × 480 preprocessing settings. The saved model bundle also stores the feature names and label encoder so predictions are converted back to readable shape labels.
+
+## Tuning and limitations
+
+- Objects should have sufficient colour saturation compared with the background; the current saturation threshold is `40`.
+- The minimum accepted object area is 0.7% of a 640 × 480 frame, which filters small blobs/noise.
+- Predictions are only as good as the small training set and will be sensitive to lighting, object colour, size, angle, and background.
+- The Decision Tree does not provide prediction confidence in the current interface.
+
+## Technology
+
+Python, OpenCV, NumPy, Pandas, scikit-learn, and Joblib.
 
 ## Author
+
 Julian Joseph Amaro

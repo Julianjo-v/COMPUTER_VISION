@@ -8,16 +8,19 @@ import cv2
 import numpy as np
 import csv
 import os
+from pathlib import Path
 
-# ---------------- PATH ----------------
-folder_path =  "Training images/Real_images"
+# Paths are based on this file, so the script can be started from any folder.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+folder_path = PROJECT_ROOT / "Training images" / "Real_images"
+OUTPUT_CSV = PROJECT_ROOT / "src" / "Training" / "shape_descriptors_project_640x480.csv"
 image_files = [
     f for f in os.listdir(folder_path)
     if f.lower().endswith((".jpg", ".png"))
 ]
 
 # ---------------- CSV ----------------
-with open("shape_descriptors_project_640x480.csv", "w", newline="") as f:
+with open(OUTPUT_CSV, "w", newline="") as f:
     writer = csv.writer(f)
 
     writer.writerow([
