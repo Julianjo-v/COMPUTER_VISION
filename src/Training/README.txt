@@ -1,0 +1,1 @@
+This code only reads csv that was processed using the shape_classification_resize.py
