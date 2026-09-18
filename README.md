@@ -5,6 +5,10 @@ A real-time computer vision project designed primarily for the **Raspberry Pi Ze
 The project was designed to demonstrate how computer vision and machine learning can be implemented on a small, low-power embedded computer.
 
 Although the main target is the Raspberry Pi Zero 2 W, the program can also be run on a regular computer with Python and a compatible camera.
+## Images
+<img width="788" height="598" alt="image" src="https://github.com/user-attachments/assets/d9cbf8da-b95d-4a83-86a6-626c07ba3229" />
+<img width="3024" height="4032" alt="BASE COMP VISION BOX" src="https://github.com/user-attachments/assets/d70cd222-0ca2-458a-a445-2c3029c5df03" />
+
 
 ## Project Overview
 
@@ -158,14 +162,7 @@ A bounding box is drawn around the object and the predicted shape is displayed a
 
 Example:
 
-```text
-          circle
-       ┌─────────┐
-       │         │
-       │    ●    │
-       │         │
-       └─────────┘
-```
+<img width="1514" height="987" alt="COMPUTER VISION PHOTO" src="https://github.com/user-attachments/assets/5033216d-f630-4fe3-b822-fee5133d7df1" />
 
 ## Why the Raspberry Pi Zero 2 W?
 
@@ -303,5 +300,4 @@ The project demonstrates how a small embedded computer can combine a camera, ima
 The system uses traditional computer vision to extract meaningful shape information and a lightweight Decision Tree to classify the detected objects.
 
 ## Author
-
-Raspberry Pi Zero 2 W Computer Vision and Machine Learning Project.
+Julian Joseph Amaro
