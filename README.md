@@ -3,6 +3,11 @@
 A lightweight, real-time computer-vision project that detects coloured objects from a camera feed and classifies their geometric shape. It is designed for a Raspberry Pi Zero 2 W, but the full workflow can also run on a computer with Python and a webcam.
 
 Rather than using a large neural network, the project segments objects by colour, measures their contours, and sends five numeric shape descriptors to a Decision Tree classifier. This keeps the runtime small enough for embedded hardware.
+<img width="1514" height="987" alt="image" src="https://github.com/user-attachments/assets/bc88a294-1ca8-4786-96f8-96d237073438" />
+<img width="1514" height="987" alt="COMPUTER VISION PHOTO" src="https://github.com/user-attachments/assets/dd7d6d23-c6e7-4242-9411-29258d21e8b2" />
+
+
+
 
 ## What the project does
 
