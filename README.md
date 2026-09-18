@@ -4,7 +4,8 @@ A lightweight, real-time computer-vision project that detects coloured objects f
 
 Rather than using a large neural network, the project segments objects by colour, measures their contours, and sends five numeric shape descriptors to a Decision Tree classifier. This keeps the runtime small enough for embedded hardware.
 <img width="1514" height="987" alt="image" src="https://github.com/user-attachments/assets/bc88a294-1ca8-4786-96f8-96d237073438" />
-<img width="1514" height="987" alt="COMPUTER VISION PHOTO" src="https://github.com/user-attachments/assets/dd7d6d23-c6e7-4242-9411-29258d21e8b2" />
+<img width="1080" height="846" alt="image" src="https://github.com/user-attachments/assets/36e41c81-44a2-47ed-8794-d54a23334d00" />
+
 
 
 
