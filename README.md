@@ -209,25 +209,6 @@ Once the system is working, the program can be transferred to the Raspberry Pi Z
 * Scikit-learn
 * Joblib
 
-## Project Structure
-
-```text
-computer-vision-shape-classifier/
-│
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── src/
-│   └── shape_classifier.py
-│
-├── models/
-│   └── decision_tree_model_FIXED.joblib
-│
-└── images/
-    └── example_detection.png
-```
-
 ## Installation
 
 Clone the repository:
